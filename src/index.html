@@ -1,37 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <ul id="messages">
-        <li>Texto</li>
-    </ul>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Bordô</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-        const message = document.getElementById('messages');
-        const input = document.getElementById('input');
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-        document.addEventListener('submit', (e) => {
+    body {
+        background-color: #4b1a1a;
+        display: flex;
+        height: 100vh;
+        color: #fff;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+        width: 28%;
+        background-color: #5c1b1b;
+        display: flex;
+        flex-direction: column;
+        border-right: 2px solid #3b0b0b;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        overflow: hidden;
+    }
+
+    .sidebar header {
+        padding: 15px;
+        text-align: center;
+        background-color: #7a2a2a;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-bottom: 2px solid #3b0b0b;
+        border-top-right-radius: 20px;
+    }
+
+    .chat-list {
+        flex: 1;
+        overflow-y: auto;
+        border-bottom-right-radius: 20px;
+    }
+
+    .chat-item {
+        padding: 15px;
+        border-bottom: 1px solid #3b0b0b;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        border-radius: 10px;
+        margin: 5px 10px;
+    }
+
+    .chat-item:hover {
+        background-color: #8e3d3d;
+        transform: scale(1.02);
+    }
+
+    .chat-item.active {
+        background-color: #b34a4a;
+        font-weight: bold;
+    }
+
+    /* --- MAIN CHAT --- */
+    .main-chat {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #f2e5e5;
+        border-top-left-radius: 25px;
+        border-bottom-left-radius: 25px;
+        overflow: hidden;
+        color: #2c0202;
+    }
+
+    .main-chat header {
+        padding: 15px;
+        background-color: #d19b9b;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 2px solid #b36b6b;
+        font-size: 1.1em;
+    }
+
+    /* --- MENSAGENS --- */
+    #messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #messages li {
+        list-style: none;
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 20px;
+        background-color: #e2bebe;
+        align-self: flex-start;
+        word-wrap: break-word;
+        color: #2c0202;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    #messages li.self {
+        background-color: #d36b6b;
+        color: #fff;
+        align-self: flex-end;
+    }
+
+    /* --- INPUT E BOTÃO --- */
+    form {
+        display: flex;
+        border-top: 2px solid #b36b6b;
+        background-color: #e9cfcf;
+        padding: 10px;
+        border-bottom-left-radius: 25px;
+    }
+
+    #input {
+        flex: 1;
+        padding: 12px 15px;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        background-color: #fff;
+        color: #2c0202;
+        border-radius: 25px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+        padding: 12px 20px;
+        background-color: #b34a4a;
+        border: none;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 25px;
+        margin-left: 10px;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: #d36b6b;
+        transform: scale(1.05);
+    }
+
+    /* --- SCROLL PERSONALIZADO --- */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #b34a4a;
+        border-radius: 4px;
+    }
+</style>
+
+<body>
+    <div class="sidebar">
+        <header>Conversas</header>
+        <div class="chat-list">
+            <div class="chat-item active">Nicolas</div>
+            <div class="chat-item">Mãe</div>
+            <div class="chat-item">Grupo da Escola</div>
+            <div class="chat-item">Ka</div>
+        </div>
+    </div>
+
+    <div class="main-chat">
+        <header>Nicolas</header>
+        <ul id="messages"></ul>
+        <form id="form">
+            <input id="input" autocomplete="off" placeholder="Digite uma mensagem..." />
+            <button>Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+        const chatItems = document.querySelectorAll('.chat-item');
+        let currentRoom = 'Nicolas';
+
+        // Entra na sala inicial
+        socket.emit('joinRoom', currentRoom);
+
+        // Enviar mensagem
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if(input.value){
-                socket.emit('message', input.value);
+            if (input.value.trim()) {
+                socket.emit('message', { room: currentRoom, msg: input.value });
+                addMessage(input.value, true);
                 input.value = '';
             }
         });
 
-        socket.on('message', (msg) =>{
+        // Receber mensagem
+        socket.on('message', (msg) => {
+            addMessage(msg, false);
+        });
+
+        // Trocar de sala ao clicar em uma conversa
+        chatItems.forEach((item) => {
+            item.addEventListener('click', () => {
+                document.querySelector('.chat-item.active')?.classList.remove('active');
+                item.classList.add('active');
+                currentRoom = item.textContent.trim();
+                document.querySelector('.main-chat header').textContent = currentRoom;
+                messages.innerHTML = '';
+                socket.emit('joinRoom', currentRoom);
+            });
+        });
+
+        // Função para adicionar mensagens
+        function addMessage(msg, self = false) {
             const li = document.createElement('li');
             li.textContent = msg;
-            message.appendChild(li);
-        })
+            if (self) li.classList.add('self');
+            messages.appendChild(li);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        socket.on('loadMessages', (msgs) => {
+            messages.innerHTML = '';
+            msgs.forEach((msg) => {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                messages.appendChild(li);
+            });
+        });
+
     </script>
 </body>
+
 </html>
