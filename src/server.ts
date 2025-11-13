@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
 
+//definr o formato da mensagem
 interface Message {
   username: string;
   msg: string;
@@ -14,7 +15,7 @@ class App {
   private http: http.Server;
   private io: Server;
   private messagesFile: string;
-  private messagesData: Record<string, Message[]>; // { sala: [{username, msg}, ...] }
+  private messagesData: Record<string, Message[]>; 
 
   constructor() {
     this.app = express();
@@ -29,23 +30,23 @@ class App {
   listenServer() {
     const PORT = 3005;
     this.http.listen(PORT, () => {
-      console.log(`🚀 Servidor rodando na porta ${PORT}`);
+      console.log(`Servidor rodando na porta ${PORT}`);
     }).on('error', (err: any) => {
       if (err.code === 'EADDRINUSE') {
-        console.log(`❌ Porta ${PORT} já está em uso. Feche o processo anterior.`);
+        console.log(`Porta ${PORT} já está em uso. Feche o processo anterior.`);
         process.exit(1);
       }
     });
   }
 
-  // 🔹 Lê as mensagens salvas
+  // Lê as mensagens salvas
   loadMessages(): Record<string, Message[]> {
     try {
       if (fs.existsSync(this.messagesFile)) {
         const data = fs.readFileSync(this.messagesFile, 'utf-8');
         return JSON.parse(data);
       } else {
-        console.log('📁 Nenhum arquivo de mensagens encontrado. Criando um novo...');
+        console.log('Nenhum arquivo de mensagens encontrado. Criando um novo...');
         fs.writeFileSync(this.messagesFile, JSON.stringify({}, null, 2));
         return {};
       }
@@ -55,20 +56,20 @@ class App {
     }
   }
 
-  // 🔹 Salva mensagens no arquivo
+  // Salva mensagens no arquivo
   saveMessages() {
     fs.writeFileSync(this.messagesFile, JSON.stringify(this.messagesData, null, 2));
   }
 
   listenSocket() {
     this.io.on('connection', (socket) => {
-      console.log('🟢 Usuário conectado =>', socket.id);
+      console.log('Usuário conectado =>', socket.id);
 
-      // 🔹 Entrar em uma sala com nome
+      // Entrar em uma sala com nome de usuario
       socket.on('joinRoom', (room: string, username: string) => {
         socket.join(room);
         (socket as any).username = username; // salva o nome no socket
-        console.log(`👤 ${username} entrou na sala: ${room}`);
+        console.log(`${username} entrou na sala: ${room}`);
 
         // Envia histórico da sala
         if (this.messagesData[room]) {
@@ -76,9 +77,9 @@ class App {
         }
       });
 
-      // 🔹 Receber mensagem
+      //Receber mensagem
       socket.on('message', ({ room, username, msg }) => {
-        console.log(`💬 [${room}] ${username}: ${msg}`);
+        console.log(`[${room}] ${username}: ${msg}`);
 
         const newMsg = { username, msg };
 
@@ -93,16 +94,16 @@ class App {
         this.io.to(room).emit('message', newMsg);
       });
 
-      // 🔹 Desconectar
+      // Desconectar
       socket.on('disconnect', () => {
         const username = (socket as any).username || socket.id;
-        console.log(`🔴 ${username} saiu do chat`);
+        console.log(`${username} saiu do chat`);
       });
     });
   }
 
   setupRoutes() {
-    this.app.use(express.static(path.join(__dirname))); // para servir CSS/JS
+    this.app.use(express.static(path.join(__dirname))); 
     this.app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '/index.html'));
     });

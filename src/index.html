@@ -4,217 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Bordô</title>
+    <title>Chat LOMI</title>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-        background-color: #4b1a1a;
-        display: flex;
-        height: 100vh;
-        color: #fff;
-    }
-
-    /* --- SIDEBAR --- */
-    .sidebar {
-        width: 28%;
-        background-color: #5c1b1b;
-        display: flex;
-        flex-direction: column;
-        border-right: 2px solid #3b0b0b;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        overflow: hidden;
-    }
-
-    .sidebar header {
-        padding: 15px;
-        text-align: center;
-        background-color: #7a2a2a;
-        font-size: 1.2em;
-        font-weight: bold;
-        border-bottom: 2px solid #3b0b0b;
-        border-top-right-radius: 20px;
-    }
-
-    .chat-list {
-        flex: 1;
-        overflow-y: auto;
-        border-bottom-right-radius: 20px;
-    }
-
-    .chat-item {
-        padding: 15px;
-        border-bottom: 1px solid #3b0b0b;
-        cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
-        border-radius: 10px;
-        margin: 5px 10px;
-    }
-
-    .chat-item:hover {
-        background-color: #8e3d3d;
-        transform: scale(1.02);
-    }
-
-    .chat-item.active {
-        background-color: #b34a4a;
-        font-weight: bold;
-    }
-
-    /* --- MAIN CHAT --- */
-    .main-chat {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background-color: #f2e5e5;
-        border-top-left-radius: 25px;
-        border-bottom-left-radius: 25px;
-        overflow: hidden;
-        color: #2c0202;
-    }
-
-    .main-chat header {
-        padding: 15px;
-        background-color: #d19b9b;
-        font-weight: bold;
-        text-align: center;
-        border-bottom: 2px solid #b36b6b;
-        font-size: 1.1em;
-    }
-
-    /* --- MENSAGENS --- */
-    #messages {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    #messages li {
-        list-style: none;
-        max-width: 70%;
-        padding: 12px 16px;
-        border-radius: 20px;
-        background-color: #e2bebe;
-        align-self: flex-start;
-        word-wrap: break-word;
-        color: #2c0202;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    #messages li.self {
-        background-color: #d36b6b;
-        color: #fff;
-        align-self: flex-end;
-    }
-
-    /* --- INPUT E BOTÃO --- */
-    form {
-        display: flex;
-        border-top: 2px solid #b36b6b;
-        background-color: #e9cfcf;
-        padding: 10px;
-        border-bottom-left-radius: 25px;
-    }
-
-    #input {
-        flex: 1;
-        padding: 12px 15px;
-        border: none;
-        outline: none;
-        font-size: 1em;
-        background-color: #fff;
-        color: #2c0202;
-        border-radius: 25px;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    button {
-        padding: 12px 20px;
-        background-color: #b34a4a;
-        border: none;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        border-radius: 25px;
-        margin-left: 10px;
-        transition: background 0.3s, transform 0.2s;
-    }
-
-    button:hover {
-        background-color: #d36b6b;
-        transform: scale(1.05);
-    }
-
-    /* --- POPUP --- */
-    .popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 999;
-    }
-
-    .popup-content {
-        background: #f2e5e5;
-        color: #4b1a1a;
-        padding: 30px;
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        width: 300px;
-    }
-
-    .popup-content input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #b36b6b;
-        margin-top: 10px;
-        outline: none;
-    }
-
-    .popup-content button {
-        background: #b34a4a;
-        color: white;
-        border: none;
-        margin-top: 15px;
-        padding: 10px 20px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .popup-content button:hover {
-        background: #d36b6b;
-    }
-
-    /* --- SCROLL PERSONALIZADO --- */
-    ::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #b34a4a;
-        border-radius: 4px;
-    }
-</style>
 
 <body>
     <div class="sidebar">
@@ -246,8 +39,9 @@
         let currentRoom = 'Grupo da Sala';
         let username = "";
 
-        // 🔹 Cria popup para o nome
+        // Cria popup para o nome
         const popup = document.createElement('div');
+
         popup.classList.add('popup');
         popup.innerHTML = `
           <div class="popup-content">
@@ -259,17 +53,17 @@
         `;
         document.body.appendChild(popup);
 
+        //salva o nome e entra na sala
         document.getElementById('enterBtn').addEventListener('click', () => {
             const nameInput = document.getElementById('usernameInput').value.trim();
             if (nameInput !== "") {
                 username = nameInput;
                 popup.style.display = 'none';
                 socket.emit('joinRoom', currentRoom, username);
-
             }
         });
 
-        // 🔹 Envia mensagem
+        // Envia mensagem
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value && username) {
@@ -278,26 +72,22 @@
             }
         });
 
-
-        // 🔹 Recebe mensagem
-        // 🔹 Recebe mensagens antigas da sala
+        // Recebe mensagens antigas da sala
         socket.on('loadMessages', (msgs) => {
-            messages.innerHTML = ''; // limpa antes de carregar
+            messages.innerHTML = ''; 
             msgs.forEach(({ username: sender, msg }) => {
                 const self = sender === username;
                 addMessage(`${sender}: ${msg}`, self);
             });
         });
 
-
-        // 🔹 Recebe mensagem em tempo real
+        // Recebe mensagem em tempo real
         socket.on('message', ({ username: sender, msg }) => {
             const self = sender === username;
             addMessage(`${sender}: ${msg}`, self);
         });
 
-
-        // 🔹 Troca de sala
+        // Troca de sala
         chatItems.forEach((item) => {
             item.addEventListener('click', () => {
                 document.querySelector('.chat-item.active')?.classList.remove('active');
@@ -313,7 +103,7 @@
             messages.scrollTop = messages.scrollHeight;
         }
 
-        // 🔹 Adiciona mensagens
+        // Adiciona mensagens
         function addMessage(message, isSelf) {
             const li = document.createElement('li');
             li.textContent = message;
@@ -321,7 +111,6 @@
             document.getElementById('messages').appendChild(li);
             scrollToBottom();
         }
-
 
     </script>
 

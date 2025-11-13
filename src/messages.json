@@ -1,82 +1,86 @@
 {
-  "Nicolas": [
-    {
-      "username": "nick",
-      "msg": "oiii"
-    }
-  ],
   "Grupo da Sala": [
     {
-      "username": "lolo",
+      "username": "ka",
       "msg": "oii"
     },
     {
-      "username": "nick",
-      "msg": "iuu"
-    },
-    {
-      "username": "nick",
-      "msg": "oii lo"
-    },
-    {
       "username": "lolo",
-      "msg": "oii nick"
+      "msg": "alguem tem o email da turma?"
     },
     {
-      "username": "nick",
-      "msg": "o meu osnho é desenhar onibus"
+      "username": "ka",
+      "msg": "info23pgua@gmail.com"
     },
     {
-      "username": "lolo",
-      "msg": "pq?"
+      "username": "pai",
+      "msg": "ksfisa"
     },
     {
-      "username": "nick",
-      "msg": "slaa"
+      "username": "pai",
+      "msg": "spfojwadmfu "
+    },
+    {
+      "username": "pai",
+      "msg": "skjd esifue"
+    },
+    {
+      "username": "pai",
+      "msg": "sakdioaue sfuyae d"
     }
   ],
   "Transporte Matinhos": [
     {
-      "username": "lolo",
-      "msg": "salve"
-    },
-    {
-      "username": "nick",
-      "msg": "salve salve lolo"
+      "username": "ka",
+      "msg": "manda a looooooooooooooc"
     },
     {
       "username": "lolo",
-      "msg": "onibus "
+      "msg": "eu n tenho"
     },
     {
       "username": "lolo",
-      "msg": "manda a loc"
-    },
-    {
-      "username": "nick",
-      "msg": "nãoo"
+      "msg": "perdi o onibus"
     },
     {
       "username": "lolo",
-      "msg": "af"
+      "msg": "😭😭😭😭😭"
+    },
+    {
+      "username": "pai",
+      "msg": "uh"
     }
   ],
   "Família": [
     {
-      "username": "nick",
-      "msg": "oii"
+      "username": "vovo",
+      "msg": "bom.dia.meus.netinhos"
     },
     {
       "username": "lolo",
-      "msg": "oii lindo"
+      "msg": "bença vó"
     },
     {
-      "username": "nick",
-      "msg": "tudo bem??"
+      "username": "luiz",
+      "msg": "bom dia"
+    },
+    {
+      "username": "pai",
+      "msg": "churas hj?"
+    }
+  ],
+  "Meninas": [
+    {
+      "username": "ka",
+      "msg": "oiiiiii"
     },
     {
       "username": "lolo",
-      "msg": "melhor agr bb"
+      "msg": "aonde vcs estão "
+    },
+    {
+      "username": "ka",
+      "msg": "no lab1"
     }
   ]
 }
