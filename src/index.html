@@ -242,7 +242,8 @@
         const input = document.getElementById('input');
         const messages = document.getElementById('messages');
         const chatItems = document.querySelectorAll('.chat-item');
-        let currentRoom = 'Nicolas';
+
+        let currentRoom = 'Grupo da Sala';
         let username = "";
 
         // 🔹 Cria popup para o nome
@@ -263,7 +264,8 @@
             if (nameInput !== "") {
                 username = nameInput;
                 popup.style.display = 'none';
-                socket.emit('joinRoom', currentRoom);
+                socket.emit('joinRoom', currentRoom, username);
+
             }
         });
 
@@ -303,7 +305,7 @@
                 currentRoom = item.textContent.trim();
                 document.querySelector('.main-chat header').textContent = currentRoom;
                 messages.innerHTML = '';
-                socket.emit('joinRoom', currentRoom);
+                socket.emit('joinRoom', currentRoom, username);
             });
         });
 

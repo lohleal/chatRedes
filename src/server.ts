@@ -29,10 +29,10 @@ class App {
   listenServer() {
     const PORT = 3005;
     this.http.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
+      console.log(`🚀 Servidor rodando na porta ${PORT}`);
     }).on('error', (err: any) => {
       if (err.code === 'EADDRINUSE') {
-        console.log(`Porta ${PORT} já está em uso. Feche o processo anterior.`);
+        console.log(`❌ Porta ${PORT} já está em uso. Feche o processo anterior.`);
         process.exit(1);
       }
     });
@@ -62,12 +62,13 @@ class App {
 
   listenSocket() {
     this.io.on('connection', (socket) => {
-      console.log('Usuário conectado =>', socket.id);
+      console.log('🟢 Usuário conectado =>', socket.id);
 
-      // Entrar em uma sala
-      socket.on('joinRoom', (room) => {
+      // 🔹 Entrar em uma sala com nome
+      socket.on('joinRoom', (room: string, username: string) => {
         socket.join(room);
-        console.log(`${socket.id} entrou na sala: ${room}`);
+        (socket as any).username = username; // salva o nome no socket
+        console.log(`👤 ${username} entrou na sala: ${room}`);
 
         // Envia histórico da sala
         if (this.messagesData[room]) {
@@ -75,11 +76,10 @@ class App {
         }
       });
 
-      // Receber mensagem
+      // 🔹 Receber mensagem
       socket.on('message', ({ room, username, msg }) => {
         console.log(`💬 [${room}] ${username}: ${msg}`);
 
-        // Cria o registro
         const newMsg = { username, msg };
 
         // Salva em memória
@@ -93,14 +93,16 @@ class App {
         this.io.to(room).emit('message', newMsg);
       });
 
+      // 🔹 Desconectar
       socket.on('disconnect', () => {
-        console.log('Usuário desconectado =>', socket.id);
+        const username = (socket as any).username || socket.id;
+        console.log(`🔴 ${username} saiu do chat`);
       });
     });
   }
 
   setupRoutes() {
-    this.app.use(express.static(path.join(__dirname))); // pra ler CSS/JS
+    this.app.use(express.static(path.join(__dirname))); // para servir CSS/JS
     this.app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '/index.html'));
     });

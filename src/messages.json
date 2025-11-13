@@ -1,0 +1,82 @@
+{
+  "Nicolas": [
+    {
+      "username": "nick",
+      "msg": "oiii"
+    }
+  ],
+  "Grupo da Sala": [
+    {
+      "username": "lolo",
+      "msg": "oii"
+    },
+    {
+      "username": "nick",
+      "msg": "iuu"
+    },
+    {
+      "username": "nick",
+      "msg": "oii lo"
+    },
+    {
+      "username": "lolo",
+      "msg": "oii nick"
+    },
+    {
+      "username": "nick",
+      "msg": "o meu osnho é desenhar onibus"
+    },
+    {
+      "username": "lolo",
+      "msg": "pq?"
+    },
+    {
+      "username": "nick",
+      "msg": "slaa"
+    }
+  ],
+  "Transporte Matinhos": [
+    {
+      "username": "lolo",
+      "msg": "salve"
+    },
+    {
+      "username": "nick",
+      "msg": "salve salve lolo"
+    },
+    {
+      "username": "lolo",
+      "msg": "onibus "
+    },
+    {
+      "username": "lolo",
+      "msg": "manda a loc"
+    },
+    {
+      "username": "nick",
+      "msg": "nãoo"
+    },
+    {
+      "username": "lolo",
+      "msg": "af"
+    }
+  ],
+  "Família": [
+    {
+      "username": "nick",
+      "msg": "oii"
+    },
+    {
+      "username": "lolo",
+      "msg": "oii lindo"
+    },
+    {
+      "username": "nick",
+      "msg": "tudo bem??"
+    },
+    {
+      "username": "lolo",
+      "msg": "melhor agr bb"
+    }
+  ]
+}
