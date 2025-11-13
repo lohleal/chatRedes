@@ -157,6 +157,54 @@
         transform: scale(1.05);
     }
 
+    /* --- POPUP --- */
+    .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+    }
+
+    .popup-content {
+        background: #f2e5e5;
+        color: #4b1a1a;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        width: 300px;
+    }
+
+    .popup-content input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #b36b6b;
+        margin-top: 10px;
+        outline: none;
+    }
+
+    .popup-content button {
+        background: #b34a4a;
+        color: white;
+        border: none;
+        margin-top: 15px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .popup-content button:hover {
+        background: #d36b6b;
+    }
+
     /* --- SCROLL PERSONALIZADO --- */
     ::-webkit-scrollbar {
         width: 6px;
@@ -172,15 +220,15 @@
     <div class="sidebar">
         <header>Conversas</header>
         <div class="chat-list">
-            <div class="chat-item active">Nicolas</div>
-            <div class="chat-item">Mãe</div>
-            <div class="chat-item">Grupo da Escola</div>
-            <div class="chat-item">Ka</div>
+            <div class="chat-item active">Grupo da Sala</div>
+            <div class="chat-item">Transporte Matinhos</div>
+            <div class="chat-item">Família</div>
+            <div class="chat-item">Meninas</div>
         </div>
     </div>
 
     <div class="main-chat">
-        <header>Nicolas</header>
+        <header>Grupo da Sala</header>
         <ul id="messages"></ul>
         <form id="form">
             <input id="input" autocomplete="off" placeholder="Digite uma mensagem..." />
@@ -195,26 +243,59 @@
         const messages = document.getElementById('messages');
         const chatItems = document.querySelectorAll('.chat-item');
         let currentRoom = 'Nicolas';
+        let username = "";
 
-        // Entra na sala inicial
-        socket.emit('joinRoom', currentRoom);
+        // 🔹 Cria popup para o nome
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+        popup.innerHTML = `
+          <div class="popup-content">
+            <h2>Bem-vindo!</h2>
+            <p>Digite seu nome para entrar no chat:</p>
+            <input type="text" id="usernameInput" placeholder="Seu nome..." />
+            <button id="enterBtn">Entrar</button>
+          </div>
+        `;
+        document.body.appendChild(popup);
 
-        // Enviar mensagem
+        document.getElementById('enterBtn').addEventListener('click', () => {
+            const nameInput = document.getElementById('usernameInput').value.trim();
+            if (nameInput !== "") {
+                username = nameInput;
+                popup.style.display = 'none';
+                socket.emit('joinRoom', currentRoom);
+            }
+        });
+
+        // 🔹 Envia mensagem
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (input.value.trim()) {
-                socket.emit('message', { room: currentRoom, msg: input.value });
-                addMessage(input.value, true);
+            if (input.value && username) {
+                socket.emit('message', { room: currentRoom, username, msg: input.value });
                 input.value = '';
             }
         });
 
-        // Receber mensagem
-        socket.on('message', (msg) => {
-            addMessage(msg, false);
+
+        // 🔹 Recebe mensagem
+        // 🔹 Recebe mensagens antigas da sala
+        socket.on('loadMessages', (msgs) => {
+            messages.innerHTML = ''; // limpa antes de carregar
+            msgs.forEach(({ username: sender, msg }) => {
+                const self = sender === username;
+                addMessage(`${sender}: ${msg}`, self);
+            });
         });
 
-        // Trocar de sala ao clicar em uma conversa
+
+        // 🔹 Recebe mensagem em tempo real
+        socket.on('message', ({ username: sender, msg }) => {
+            const self = sender === username;
+            addMessage(`${sender}: ${msg}`, self);
+        });
+
+
+        // 🔹 Troca de sala
         chatItems.forEach((item) => {
             item.addEventListener('click', () => {
                 document.querySelector('.chat-item.active')?.classList.remove('active');
@@ -226,25 +307,22 @@
             });
         });
 
-        // Função para adicionar mensagens
-        function addMessage(msg, self = false) {
-            const li = document.createElement('li');
-            li.textContent = msg;
-            if (self) li.classList.add('self');
-            messages.appendChild(li);
+        function scrollToBottom() {
             messages.scrollTop = messages.scrollHeight;
         }
 
-        socket.on('loadMessages', (msgs) => {
-            messages.innerHTML = '';
-            msgs.forEach((msg) => {
-                const li = document.createElement('li');
-                li.textContent = msg;
-                messages.appendChild(li);
-            });
-        });
+        // 🔹 Adiciona mensagens
+        function addMessage(message, isSelf) {
+            const li = document.createElement('li');
+            li.textContent = message;
+            li.classList.add(isSelf ? 'self' : 'received');
+            document.getElementById('messages').appendChild(li);
+            scrollToBottom();
+        }
+
 
     </script>
+
 </body>
 
 </html>

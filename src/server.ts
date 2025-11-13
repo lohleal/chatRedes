@@ -4,12 +4,17 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
 
+interface Message {
+  username: string;
+  msg: string;
+}
+
 class App {
   private app: Application;
   private http: http.Server;
   private io: Server;
   private messagesFile: string;
-  private messagesData: Record<string, string[]>; // { sala: [msg1, msg2...] }
+  private messagesData: Record<string, Message[]>; // { sala: [{username, msg}, ...] }
 
   constructor() {
     this.app = express();
@@ -32,10 +37,9 @@ class App {
       }
     });
   }
-  
 
   // 🔹 Lê as mensagens salvas
-  loadMessages(): Record<string, string[]> {
+  loadMessages(): Record<string, Message[]> {
     try {
       if (fs.existsSync(this.messagesFile)) {
         const data = fs.readFileSync(this.messagesFile, 'utf-8');
@@ -50,7 +54,6 @@ class App {
       return {};
     }
   }
-  
 
   // 🔹 Salva mensagens no arquivo
   saveMessages() {
@@ -73,18 +76,21 @@ class App {
       });
 
       // Receber mensagem
-      socket.on('message', ({ room, msg }) => {
-        console.log(`💬 [${room}] ${msg}`);
+      socket.on('message', ({ room, username, msg }) => {
+        console.log(`💬 [${room}] ${username}: ${msg}`);
+
+        // Cria o registro
+        const newMsg = { username, msg };
 
         // Salva em memória
         if (!this.messagesData[room]) this.messagesData[room] = [];
-        this.messagesData[room].push(msg);
+        this.messagesData[room].push(newMsg);
 
         // Atualiza o arquivo
         this.saveMessages();
 
-        // Envia para os outros usuários da sala
-        socket.to(room).emit('message', msg);
+        // Envia para todos os usuários da sala
+        this.io.to(room).emit('message', newMsg);
       });
 
       socket.on('disconnect', () => {
@@ -94,6 +100,7 @@ class App {
   }
 
   setupRoutes() {
+    this.app.use(express.static(path.join(__dirname))); // pra ler CSS/JS
     this.app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '/index.html'));
     });
