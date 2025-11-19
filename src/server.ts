@@ -4,7 +4,6 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
 
-//definr o formato da mensagem
 interface Message {
   username: string;
   msg: string;
@@ -15,7 +14,7 @@ class App {
   private http: http.Server;
   private io: Server;
   private messagesFile: string;
-  private messagesData: Record<string, Message[]>; 
+  private messagesData: Record<string, Message[]>;
 
   constructor() {
     this.app = express();
@@ -28,7 +27,7 @@ class App {
   }
 
   listenServer() {
-    const PORT = 3005;
+    const PORT = 3001;
     this.http.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     }).on('error', (err: any) => {
@@ -39,7 +38,6 @@ class App {
     });
   }
 
-  // Lê as mensagens salvas
   loadMessages(): Record<string, Message[]> {
     try {
       if (fs.existsSync(this.messagesFile)) {
@@ -56,7 +54,6 @@ class App {
     }
   }
 
-  // Salva mensagens no arquivo
   saveMessages() {
     fs.writeFileSync(this.messagesFile, JSON.stringify(this.messagesData, null, 2));
   }
@@ -65,36 +62,27 @@ class App {
     this.io.on('connection', (socket) => {
       console.log('Usuário conectado =>', socket.id);
 
-      // Entrar em uma sala com nome de usuario
       socket.on('joinRoom', (room: string, username: string) => {
         socket.join(room);
-        (socket as any).username = username; // salva o nome no socket
+        (socket as any).username = username;
         console.log(`${username} entrou na sala: ${room}`);
 
-        // Envia histórico da sala
         if (this.messagesData[room]) {
           socket.emit('loadMessages', this.messagesData[room]);
         }
       });
 
-      //Receber mensagem
       socket.on('message', ({ room, username, msg }) => {
         console.log(`[${room}] ${username}: ${msg}`);
 
         const newMsg = { username, msg };
 
-        // Salva em memória
         if (!this.messagesData[room]) this.messagesData[room] = [];
         this.messagesData[room].push(newMsg);
-
-        // Atualiza o arquivo
         this.saveMessages();
-
-        // Envia para todos os usuários da sala
         this.io.to(room).emit('message', newMsg);
       });
 
-      // Desconectar
       socket.on('disconnect', () => {
         const username = (socket as any).username || socket.id;
         console.log(`${username} saiu do chat`);
@@ -103,7 +91,7 @@ class App {
   }
 
   setupRoutes() {
-    this.app.use(express.static(path.join(__dirname))); 
+    this.app.use(express.static(path.join(__dirname)));
     this.app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '/index.html'));
     });

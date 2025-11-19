@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,7 +38,6 @@
         let currentRoom = 'Grupo da Sala';
         let username = "";
 
-        // Cria popup para o nome
         const popup = document.createElement('div');
 
         popup.classList.add('popup');
@@ -53,7 +51,6 @@
         `;
         document.body.appendChild(popup);
 
-        //salva o nome e entra na sala
         document.getElementById('enterBtn').addEventListener('click', () => {
             const nameInput = document.getElementById('usernameInput').value.trim();
             if (nameInput !== "") {
@@ -63,7 +60,6 @@
             }
         });
 
-        // Envia mensagem
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value && username) {
@@ -72,7 +68,6 @@
             }
         });
 
-        // Recebe mensagens antigas da sala
         socket.on('loadMessages', (msgs) => {
             messages.innerHTML = ''; 
             msgs.forEach(({ username: sender, msg }) => {
@@ -81,13 +76,11 @@
             });
         });
 
-        // Recebe mensagem em tempo real
         socket.on('message', ({ username: sender, msg }) => {
             const self = sender === username;
             addMessage(`${sender}: ${msg}`, self);
         });
 
-        // Troca de sala
         chatItems.forEach((item) => {
             item.addEventListener('click', () => {
                 document.querySelector('.chat-item.active')?.classList.remove('active');
@@ -103,7 +96,6 @@
             messages.scrollTop = messages.scrollHeight;
         }
 
-        // Adiciona mensagens
         function addMessage(message, isSelf) {
             const li = document.createElement('li');
             li.textContent = message;
@@ -113,7 +105,5 @@
         }
 
     </script>
-
 </body>
-
 </html>

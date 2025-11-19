@@ -1,86 +1,52 @@
 {
   "Grupo da Sala": [
     {
+      "username": "lolo",
+      "msg": "bom dia"
+    },
+    {
       "username": "ka",
-      "msg": "oii"
+      "msg": "bom dia"
+    },
+    {
+      "username": "ana",
+      "msg": "bom diaa"
+    },
+    {
+      "username": "ana",
+      "msg": "hoje tem aula de redes?"
     },
     {
       "username": "lolo",
-      "msg": "alguem tem o email da turma?"
-    },
-    {
-      "username": "ka",
-      "msg": "info23pgua@gmail.com"
-    },
-    {
-      "username": "pai",
-      "msg": "ksfisa"
-    },
-    {
-      "username": "pai",
-      "msg": "spfojwadmfu "
-    },
-    {
-      "username": "pai",
-      "msg": "skjd esifue"
-    },
-    {
-      "username": "pai",
-      "msg": "sakdioaue sfuyae d"
+      "msg": "simm, é correção das atividades"
     }
   ],
   "Transporte Matinhos": [
     {
-      "username": "ka",
-      "msg": "manda a looooooooooooooc"
-    },
-    {
       "username": "lolo",
-      "msg": "eu n tenho"
-    },
-    {
-      "username": "lolo",
-      "msg": "perdi o onibus"
-    },
-    {
-      "username": "lolo",
-      "msg": "😭😭😭😭😭"
-    },
-    {
-      "username": "pai",
-      "msg": "uh"
-    }
-  ],
-  "Família": [
-    {
-      "username": "vovo",
-      "msg": "bom.dia.meus.netinhos"
-    },
-    {
-      "username": "lolo",
-      "msg": "bença vó"
-    },
-    {
-      "username": "luiz",
       "msg": "bom dia"
     },
     {
-      "username": "pai",
-      "msg": "churas hj?"
+      "username": "lolo",
+      "msg": "alguém manda a loc?"
+    },
+    {
+      "username": "ka",
+      "msg": "não posso, perdi o onibus"
+    },
+    {
+      "username": "lolo",
+      "msg": "😭😭😭😭"
     }
   ],
   "Meninas": [
     {
-      "username": "ka",
-      "msg": "oiiiiii"
-    },
-    {
-      "username": "lolo",
-      "msg": "aonde vcs estão "
+      "username": "ana",
+      "msg": "oiii meninas"
     },
     {
       "username": "ka",
-      "msg": "no lab1"
+      "msg": "oiiii"
     }
   ]
 }
